@@ -1,0 +1,44 @@
+import * as React from "react";
+import PropTypes from "prop-types";
+import Avatar from "@mui/material/Avatar";
+import Conteudos from "../home/components/Conteudos";
+import CssBaseline from "@mui/material/CssBaseline";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
+import { getConteudos } from "../../service/ConteudoService";
+import { useState, useEffect } from "react";
+
+const Jogos = () => {
+  const [jogos, setJogos] = useState([]);
+
+  useEffect(() => {
+    async function buscarDados() {
+      const filtros = { jogo: true, orderByUltimos: true };
+      const dados = await getConteudos(filtros);
+      setJogos(dados);
+    }
+    buscarDados();
+  }, []);
+
+  console.log("Jogos: ", jogos);
+
+  return (
+    <div>
+    <Container
+      maxWidth="lg"
+      component="main"
+      sx={{ display: "flex", flexDirection: "column", my: 16, gap: 4 }}
+    >
+      <CssBaseline enableColorScheme />
+      <Typography variant="h2" gutterBottom>
+        Descubra
+      </Typography>
+      <Conteudos conteudos={jogos} items={12}/>
+    </Container>
+  </div>
+  );
+};
+
+export default Jogos;
