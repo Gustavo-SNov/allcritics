@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 
 const URL_AUTH = "http://localhost:8080/api/auth";
 
@@ -8,6 +9,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  const navigate = useNavigate(); // Hook para redirecionamento
   // Carregar usuário do localStorage ao iniciar
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -29,6 +31,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setUser(null);
     localStorage.removeItem("user");
+    navigate(`/`); // Passa `conteudo` corretamente
   };
 
   return (

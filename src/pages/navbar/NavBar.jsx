@@ -7,15 +7,13 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import PersonOutlineRounded from "@mui/icons-material/PersonOutlineRounded";
-import InputAdornment from "@mui/material/InputAdornment";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import ColorModeIconDropdown from "../../../customizations/ColorModeIconDropdown";
-import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import Login from "../../login/Login";
-import Register from "../../register/Register";
+import ColorModeIconDropdown from "../../customizations/ColorModeIconDropdown";
+import Login from "../login/Login";
+import Register from "../register/Register";
 import { useNavigate } from "react-router";
-import { AuthContext } from "../../../service/AuthService";
-import { CardMedia, FormControl, TextField } from "@mui/material";
+import { AuthContext } from "../../service/AuthService";
+import { CardMedia } from "@mui/material";
+import PesquisaInput from "./components/pesquisaInput";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: "flex",
@@ -37,7 +35,6 @@ const NavBar = () => {
   const { user, handleLogin, logout } = useContext(AuthContext);
   const [openLogin, setLogin] = useState(false);
   const [openRegister, setRegister] = useState(false);
-  const [filtro, setFiltro] = useState("");
 
   const navigate = useNavigate(); // Hook para redirecionamento
 
@@ -50,19 +47,6 @@ const NavBar = () => {
     navigate(`/perfil`, { state: usuario }); // Passa `conteudo` corretamente
   };
 
-  const handleChangeFiltro = (novoFiltro) => {
-    setFiltro(novoFiltro);
-  };
-  const limpaFiltro = () => {
-    setFiltro("");
-  };
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    console.log(filtro);
-
-    limpaFiltro();
-  };
   return (
     <AppBar
       position="fixed"
@@ -102,19 +86,9 @@ const NavBar = () => {
               <Button variant="text" color="info" size="small" href="/jogos">
                 Jogos
               </Button>
-              {user ? (
-                <Button
-                  variant="text"
-                  color="info"
-                  size="small"
-                  sx={{ minWidth: 0 }}
-                  onClick={() => handleClickPerfil(user)}
-                >
-                  Perfil
-                </Button>
-              ) : (
-                ""
-              )}
+              <Button variant="text" color="info" size="small" href="/testes">
+                Testes
+              </Button>
             </Box>
             <Box
               sx={{
@@ -124,31 +98,7 @@ const NavBar = () => {
                 marginLeft: "auto", // Adicione esta linha para empurrar os botões para a direita
               }}
             >
-              <FormControl>
-                <OutlinedInput
-                  size="medium"
-                  id="search"
-                  placeholder="Search…"
-                  sx={{ flexGrow: 1 }}
-                  startAdornment={
-                    <InputAdornment
-                      position="start"
-                      sx={{ color: "text.primary" }}
-                    ></InputAdornment>
-                  }
-                  inputProps={{
-                    "aria-label": "search",
-                  }}
-                  backgroundColor="black"
-                  value={filtro || ""}
-                  onChange={(event) => {
-                    handleChangeFiltro(() => event.target.value);
-                  }}
-                />
-              </FormControl>
-              <Button onClick={handleSubmit}>
-                <SearchRoundedIcon fontSize="small" />
-              </Button>
+              <PesquisaInput />
               {!user ? (
                 <>
                   <Login
@@ -180,7 +130,16 @@ const NavBar = () => {
                 </>
               ) : (
                 <>
-                  <PersonOutlineRounded />
+                  <Button
+                    variant="text"
+                    color="info"
+                    size="small"
+                    sx={{ minWidth: 0 }}
+                    onClick={() => handleClickPerfil(user)}
+                  >
+                    <PersonOutlineRounded />
+                    
+                  </Button>
                   <Button
                     color="secondary"
                     variant="text"

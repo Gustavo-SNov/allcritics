@@ -3,7 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import AppTheme from "./customizations/AppTheme";
-import NavBar from "./pages/home/components/NavBar";
+import NavBar from "./pages/navbar/NavBar";
 import { AuthProvider } from "./service/AuthService";
 
 // Reuso de estruturas
@@ -16,7 +16,7 @@ function App() {
       <AuthProvider>
         <NavBar />
         <Outlet />
-        <Footer />
+        {/* <Footer /> */}
       </AuthProvider>
     </AppTheme>
   );

@@ -1,11 +1,11 @@
 import * as React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
-import Reviews from "./components/Reviews";
+import ListaReviews from "./components/ListaReviews";
 import Conteudos from "./components/Conteudos";
 import { useState, useEffect } from "react";
 import { getConteudos } from "../../service/ConteudoService";
-import { getReview } from "../../service/ReviewService";
+import { getReviews } from "../../service/ReviewService";
 import Typography from "@mui/material/Typography";
 
 const Home = () => {
@@ -19,7 +19,7 @@ const Home = () => {
       setConteudos(dados);
     }
     async function buscarDadosReview() {
-      const dados = await getReview();
+      const dados = await getReviews();
       setReview(dados);
     }
     buscarDadosConteudo();
@@ -38,7 +38,7 @@ const Home = () => {
           Últimos Lançamentos
         </Typography>
         <Conteudos conteudos={conteudos} items={6} />
-        <Reviews reviews={reviews} items={10}/>
+        <ListaReviews reviews={reviews} items={10}/>
       </Container>
     </div>
   );

@@ -11,6 +11,7 @@ import Filmes from "./pages/filmes/Filmes.jsx";
 import Jogos from "./pages/jogos/Jogos.jsx";
 import Series from "./pages/series/Series.jsx";
 import Descricao from "./pages/descricao/Descricao.jsx";
+import Testes from "./pages/testes/Testes.jsx";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
       {
         path:"/conteudo/:idConteudo",
         element: <Descricao/>
+      },
+      {
+        path:"/testes",
+        element: <Testes />
       }
 
     ]

@@ -11,7 +11,7 @@ import { styled } from "@mui/material/styles";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { useState, useContext } from "react";
 import { AuthContext } from "../../../service/AuthService";
-
+import Review from "./Review";
 
 const TitleTypography = styled(Typography)(({ theme }) => ({
   position: "relative",
@@ -92,7 +92,7 @@ UsuarioReview.propTypes = {
   ).isRequired,
 };
 
-const Reviews = ({ reviews, items }) => {
+const ListaReviews = ({ reviews, items }) => {
   const { user } = useContext(AuthContext);
   const [page, setPage] = useState(1);
   const itemsPerPage = items;
@@ -124,60 +124,11 @@ const Reviews = ({ reviews, items }) => {
       <Grid container spacing={3} columns={12} sx={{ my: 4 }}>
         {paginatedReviews.map((review, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6 }}>
-            <Card sx={{ display: "flex", height: "200px" }}>
-              <Box sx={{ flex: 1 }}>
-                <CardMedia
-                  component="img"
-                  sx={{
-                    height: "100%",
-                    width: "100%",
-                    objectFit: "scale-down",
-                  }}
-                  image={review.conteudo.urlImagem}
-                  alt={review.conteudo.titulo}
-                />
-              </Box>
-              {/* {/ 2/3 da largura para as informações */}
-              <Box
-                sx={{
-                  flex: 2,
-                  p: 2,
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                }}
-              >
-                <Box
-                  sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1 }}
-                >
-                  <Avatar
-                    src={review.usuario.avatar}
-                    sx={{ width: 24, height: 24 }}
-                  />
-                  <Typography variant="caption">
-                    {review.usuario.nome}
-                  </Typography>
-                </Box>
-                <TitleTypography
-                  gutterBottom
-                  variant="h6"
-                  onFocus={() => handleFocus(index)}
-                  onBlur={handleBlur}
-                  tabIndex={0}
-                  classnome={focusedCardIndex === index ? "Mui-focused" : ""}
-                >
-                  {review.conteudo.titulo}
-                  <NavigateNextRoundedIcon
-                    classnome="arrow"
-                    sx={{ fontSize: "1rem" }}
-                  />
-                </TitleTypography>
-
-                <Typography variant="body2" color="text.secondary" gutterBottom>
-                  {review.comentario}
-                </Typography>
-              </Box>
-            </Card>
+            <Review
+              rev={review}
+              handleBlur={handleBlur}
+              handleFocus={handleFocus}
+            />
           </Grid>
         ))}
       </Grid>
@@ -194,4 +145,4 @@ const Reviews = ({ reviews, items }) => {
   );
 };
 
-export default Reviews;
+export default ListaReviews;

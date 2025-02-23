@@ -11,7 +11,7 @@ import { styled } from "@mui/material/styles";
 import { useLocation } from "react-router-dom";
 import { getReviewsUsuario,deleteReview } from "../../service/ReviewService";
 import { useState, useEffect, useContext } from "react";
-import Reviews from "../home/components/Reviews";
+import ListaReviews from "../home/components/ListaReviews";
 import { getConteudos } from "../../service/ConteudoService";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 const StyledTypography = styled(Typography)({

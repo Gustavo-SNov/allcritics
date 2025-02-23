@@ -10,13 +10,13 @@ import {
 } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import TextField from "@mui/material/TextField";
-import Reviews from "../home/components/Reviews";
+import Reviews from "../home/components/ListaReviews";
 import CssBaseline from "@mui/material/CssBaseline";
 import Container from "@mui/material/Container";
 import Button from "@mui/material/Button";
 import { useState, useEffect, useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { getReview, postReview } from "../../service/ReviewService";
+import { getReviews, postReview } from "../../service/ReviewService";
 import { getConteudo } from "../../service/ConteudoService";
 import { AuthContext } from "../../service/AuthService";
 
@@ -49,8 +49,8 @@ const Descricao = () => {
 
   // Função para buscar reviews
   const buscarReviews = async () => {
-    const ListaReviews = await getReview();
-    const reviewsFiltrados = ListaReviews.filter(
+    const reviews = await getReviews();
+    const reviewsFiltrados = reviews.filter(
       (review) => review.conteudo.idConteudo === idConteudo
     );
     console.log("reviews: ", reviewsFiltrados);
@@ -108,7 +108,7 @@ const Descricao = () => {
         <Grid
           container
           spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}
+          columns={{ xs: 4, sm: 12, md: 12 }}
         >
           {/* Coluna da imagem */}
           <Grid size={{ xs: 12, sm: 4 }} spacing={{ xs: 2, md: 3 }}>

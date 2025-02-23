@@ -1,6 +1,6 @@
 const URL_REVIEW = "http://localhost:8080/api/review";
 
-export const getReview = async () => {
+export const getReviews = async () => {
   try {
     const response = await fetch(URL_REVIEW);
     const data = await response.json();
