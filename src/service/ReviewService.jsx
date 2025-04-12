@@ -1,8 +1,16 @@
 const URL_REVIEW = "http://localhost:8080/api/review";
 
-export const getReviews = async () => {
+export const getReviews = async ({tipoOrdenacao}) => {
+  const params = new URLSearchParams();
+
+  if (tipoOrdenacao !== undefined){
+    params.append("tipoOrdenacao", tipoOrdenacao);
+  }
+
+  const URL_REVIEWS = `${URL_REVIEW}?${params.toString()}`;
+
   try {
-    const response = await fetch(URL_REVIEW);
+    const response = await fetch(URL_REVIEWS);
     const data = await response.json();
     return data;
   } catch (error) {
@@ -34,19 +42,6 @@ export async function postReview(review, handleReview) {
     .catch((error) => {
       console.log(error);
     });
-}
-
-export async function getReviewsUsuario(idUsuario) {
-  const URL_REVIEW_USUARIO = `${URL_REVIEW}/${idUsuario}`;
-
-  try {
-    const response = await fetch(URL_REVIEW_USUARIO);
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Erro na requisição:", error);
-    return [];
-  }
 }
 
 export async function deleteReview(idReview) {

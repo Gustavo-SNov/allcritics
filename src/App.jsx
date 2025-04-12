@@ -4,20 +4,21 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import AppTheme from "./customizations/AppTheme";
 import NavBar from "./pages/navbar/NavBar";
-import { AuthProvider } from "./service/AuthService";
+import store from "./redux/store";
 
 // Reuso de estruturas
 import { Outlet } from "react-router-dom";
 import Footer from "./pages/home/components/Footer";
+import { Provider } from "react-redux";
 
-function App() {
+function App(props) {
   return (
-    <AppTheme>
-      <AuthProvider>
+    <AppTheme {...props}>
+      <Provider store={store}>
         <NavBar />
         <Outlet />
         {/* <Footer /> */}
-      </AuthProvider>
+      </Provider>
     </AppTheme>
   );
 }

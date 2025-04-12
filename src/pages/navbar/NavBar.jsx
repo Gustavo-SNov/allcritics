@@ -1,53 +1,62 @@
-import * as React from "react";
-import { useState, useContext } from "react";
-import { alpha, styled } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import AppBar from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import Button from "@mui/material/Button";
-import Container from "@mui/material/Container";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router";
+import { logout } from "../../redux/usuarioSlice";
+import {
+  redirecionarParaInicio,
+  redirecionarParaPerfil,
+  redirecionarParaFilmes,
+  redirecionarParaSeries,
+  redirecionarParaJogos,
+  resetRedirecionamento,
+} from "../../redux/navbarSlice";
+import {
+  AppBar,
+  Button,
+  Container,
+  Box,
+  Typography,
+  CardMedia
+} from "@mui/material";
 import PersonOutlineRounded from "@mui/icons-material/PersonOutlineRounded";
 import ColorModeIconDropdown from "../../customizations/ColorModeIconDropdown";
-import Login from "../login/Login";
-import Register from "../register/Register";
-import { useNavigate } from "react-router";
-import { AuthContext } from "../../service/AuthService";
-import { CardMedia } from "@mui/material";
-import PesquisaInput from "./components/pesquisaInput";
+import Login from "./components/login/Login";
+import Register from "./components/register/Register";
 
-const StyledToolbar = styled(Toolbar)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "space-between",
-  flexShrink: 0,
-  borderRadius: `calc(${theme.shape.borderRadius}px + 8px)`,
-  backdropFilter: "blur(24px)",
-  border: "1px solid",
-  borderColor: (theme.vars || theme).palette.divider,
-  backgroundColor: theme.vars
-    ? `rgba(${theme.vars.palette.background.defaultChannel} / 0.4)`
-    : alpha(theme.palette.background.default, 0.4),
-  boxShadow: (theme.vars || theme).shadows[1],
-  padding: "8px 12px",
-}));
+import PesquisaInput from "./components/PesquisaInput";
+import StyledToolbar from "./components/StyledToolbar";
+import "@fontsource/roboto/300.css";
+import { loginPost } from "../../service/AuthService";
+
 
 const NavBar = () => {
-  const { user, handleLogin, logout } = useContext(AuthContext);
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); // Hook para redirecionamento
+
+  const usuario = useSelector((state) => state.usuario);
+  const navbar = useSelector((state) => state.navbar);
+
   const [openLogin, setLogin] = useState(false);
   const [openRegister, setRegister] = useState(false);
-
-  const navigate = useNavigate(); // Hook para redirecionamento
 
   const handleOpen = () => setLogin(true);
   const handleClose = () => setLogin(false);
   const handleOpenRegister = () => setRegister(true);
   const handleCloseRegister = () => setRegister(false);
 
-  const handleClickPerfil = (usuario) => {
-    navigate(`/perfil`, { state: usuario }); // Passa `conteudo` corretamente
-  };
+
+  // Verifica se há um redirecionamento pendente e executa
+  useEffect(() => {
+    console.log("navbar redirecionarPara:", navbar?.redirecionarPara); // Log para ver o valor de redirecionarPara
+    if (navbar?.redirecionarPara) {
+      // Verifica se navbar e redirecionarPara existem
+      navigate(navbar.redirecionarPara, { state: navbar});
+      dispatch(resetRedirecionamento());
+    }
+  }, [navbar?.redirecionarPara, navigate, dispatch]);
 
   return (
+    
     <AppBar
       position="fixed"
       enableColorOnDark
@@ -59,9 +68,9 @@ const NavBar = () => {
       }}
     >
       <Container maxWidth="lg">
-        <StyledToolbar variant="dense" disableGutters>
+        <StyledToolbar variant="dense" disableGutters >
           <Box
-            sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
+            sx={ { flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}
           >
             <CardMedia
               component="img"
@@ -74,16 +83,39 @@ const NavBar = () => {
               }}
             />
             <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <Button variant="text" color="info" size="small" href="/">
+              <Button
+                variant="text"
+                color="info"
+                size="small"
+                onClick={() => dispatch(redirecionarParaInicio())}
+              >
                 Inicio
               </Button>
-              <Button variant="text" color="info" size="small" href="/filmes">
+              <Button
+                variant="text"
+                color="info"
+                size="small"
+                onClick={() => {
+                  dispatch(redirecionarParaFilmes());
+                  console.log("Ação de redirecionamento disparada");
+                }}
+              >
                 Filmes
               </Button>
-              <Button variant="text" color="info" size="small" href="/series">
+              <Button
+                variant="text"
+                color="info"
+                size="small"
+                onClick={() => dispatch(redirecionarParaSeries())}
+              >
                 Séries
               </Button>
-              <Button variant="text" color="info" size="small" href="/jogos">
+              <Button
+                variant="text"
+                color="info"
+                size="small"
+                onClick={() => dispatch(redirecionarParaJogos())}
+              >
                 Jogos
               </Button>
               <Button variant="text" color="info" size="small" href="/testes">
@@ -99,12 +131,12 @@ const NavBar = () => {
               }}
             >
               <PesquisaInput />
-              {!user ? (
+              {!usuario.isLogged ? (
                 <>
                   <Login
                     open={openLogin}
                     handleClose={handleClose}
-                    handleLogin={handleLogin}
+                    handleLogin={loginPost}
                   />
                   <Button
                     color="primary"
@@ -117,7 +149,7 @@ const NavBar = () => {
                   <Register
                     open={openRegister}
                     handleClose={handleCloseRegister}
-                    handleLogin={handleLogin}
+                    handleLogin={loginPost}
                   />
                   <Button
                     color="primary"
@@ -134,17 +166,23 @@ const NavBar = () => {
                     variant="text"
                     color="info"
                     size="small"
-                    sx={{ minWidth: 0 }}
-                    onClick={() => handleClickPerfil(user)}
+                    sx={{ minWidth: 0, display: "flex", alignItems: "center" }}
+                    onClick={() => dispatch(redirecionarParaPerfil())}
                   >
                     <PersonOutlineRounded />
-                    
+                    <Typography
+                      variant="caption"
+                      gutterBottom
+                      sx={{ marginTop: 0.8, marginLeft: 0.5 }}
+                    >
+                      Perfil
+                    </Typography>
                   </Button>
                   <Button
                     color="secondary"
                     variant="text"
                     size="small"
-                    onClick={logout}
+                    onClick={() => logout()}
                   >
                     Logout
                   </Button>

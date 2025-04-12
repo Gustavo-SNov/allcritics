@@ -1,14 +1,26 @@
-import { useState } from "react";
-import { Button, FormControl } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Button, FormControl, TextField, Autocomplete } from "@mui/material";
 import InputAdornment from "@mui/material/InputAdornment";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import {getConteudos } from "../../../service/ConteudoService";
+
+const options = ["Filmes", "Séries", "Jogos", "Livros", "Músicas", "Eventos"];
 
 const PesquisaInput = () => {
   const [filtro, setFiltro] = useState("");
+  const [conteudos, setConteudos] = useState([]);
 
-  const handleChangeFiltro = (novoFiltro) => {
-    setFiltro(novoFiltro);
+  useEffect(() => {
+    async function buscarDados() {
+      const dados = await getConteudos({ orderByUltimos: true});
+      setConteudos(dados);
+    }
+    buscarDados();
+  }, [filtro])
+
+
+  const handleChangeFiltro = (event, newValue) => {
+    setFiltro(newValue);
   };
 
   const limpaFiltro = () => {
@@ -17,37 +29,36 @@ const PesquisaInput = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     console.log(filtro);
-
     limpaFiltro();
   };
-  
+
   return (
-    <div>
-      <FormControl>
-        <OutlinedInput
-          size="medium"
-          id="search"
-          placeholder="Search…"
-          sx={{ flexGrow: 1 }}
-          startAdornment={
-            <InputAdornment
-              position="start"
-              sx={{ color: "text.primary" }}
-            ></InputAdornment>
-          }
-          inputProps={{
-            "aria-label": "search",
-          }}
-          backgroundColor="black"
-          value={filtro || ""}
-          onChange={(event) => {
-            handleChangeFiltro(() => event.target.value);
-          }}
+    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+      <FormControl sx={{ width: 300 }}>
+        <Autocomplete
+          freeSolo
+          options={options} // Lista de sugestões
+          value={filtro}
+          onInputChange={handleChangeFiltro} // Atualiza estado ao digitar
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              placeholder="Search..."
+              variant="outlined"
+              InputProps={{
+                ...params.InputProps,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchRoundedIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
+          )}
         />
       </FormControl>
-      <Button onClick={handleSubmit}>
+      <Button variant="contained" onClick={handleSubmit}>
         <SearchRoundedIcon fontSize="small" />
       </Button>
     </div>

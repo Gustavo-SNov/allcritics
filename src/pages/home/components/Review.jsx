@@ -68,8 +68,8 @@ const Review = ({ handleBlur, handleFocus, rev, index }) => {
             objectFit: "cover",
             borderRadius: "8px 0 0 8px", // Apenas arredondando o topo esquerdo e fundo esquerdo
           }}
-          image={rev.conteudo.urlImagem}
-          alt={rev.conteudo.titulo}
+          image={rev.conteudoDTO.urlImagem}
+          alt={rev.conteudoDTO.titulo}
         />
         {/* Rating abaixo da imagem */}
         <Box
@@ -114,7 +114,7 @@ const Review = ({ handleBlur, handleFocus, rev, index }) => {
             mb: 1,
           }}
         >
-          <Avatar src={rev.usuario.avatar} sx={{ width: 32, height: 32 }} />
+          <Avatar src={rev.usuario.urlFotoPerfil} sx={{ width: 32, height: 32 }} />
           <Typography variant="caption" color="text.secondary">
             {rev.usuario.nome}
           </Typography>
@@ -127,7 +127,7 @@ const Review = ({ handleBlur, handleFocus, rev, index }) => {
           onBlur={handleBlur}
           tabIndex={0}
         >
-          {rev.conteudo.titulo}
+          {rev.conteudoDTO.titulo}
           <NavigateNextRoundedIcon
             className="arrow"
             sx={{ fontSize: "1rem" }}

@@ -1,6 +1,8 @@
 import { Container, CssBaseline } from "@mui/material";
 import Review from "../home/components/Review";
 import Grid from "@mui/material/Grid2";
+import ImageUploader from "./ImageUploader";
+import Hero from "./Hero";
 const reviews = [
   {
     idReview: 1,
@@ -53,11 +55,14 @@ const Testes = () => {
   return (
     <div>
       <CssBaseline enableColorScheme />
+      
       <Container
         maxWidth="lg"
         component="main"
         sx={{ display: "flex", flexDirection: "column", my: 16, gap: 4 }}
       >
+        <Hero/>
+        <ImageUploader/>
         <Grid container spacing={3} columns={12} sx={{ my: 4 }}>
           {reviews.map((review, index) => (
             <Grid key={index} size={{ xs: 12, sm: 6 }}>
@@ -67,6 +72,8 @@ const Testes = () => {
 
         </Grid>
       </Container>
+
+      
     </div>
   );
 };

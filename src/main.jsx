@@ -7,11 +7,9 @@ import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./pages/home/Home.jsx";
 import Perfil from "./pages/perfil/perfil.jsx";
-import Filmes from "./pages/filmes/Filmes.jsx";
-import Jogos from "./pages/jogos/Jogos.jsx";
-import Series from "./pages/series/Series.jsx";
-import Descricao from "./pages/descricao/Descricao.jsx";
 import Testes from "./pages/testes/Testes.jsx";
+import Conteudos from "./pages/conteudo/Conteudos.jsx";
+import Conteudo from "./pages/conteudo/Conteudo.jsx";
 
 const router = createBrowserRouter([
   {
@@ -28,19 +26,19 @@ const router = createBrowserRouter([
       },
       {
         path: "/filmes",
-        element: <Filmes/>
+        element: <Conteudos />
       },
       {
         path:"/jogos",
-        element: <Jogos/>
+        element: <Conteudos/>
       },
       {
         path:"/series",
-        element: <Series/>
+        element: <Conteudos />
       },
       {
         path:"/conteudo/:idConteudo",
-        element: <Descricao/>
+        element: <Conteudo />
       },
       {
         path:"/testes",

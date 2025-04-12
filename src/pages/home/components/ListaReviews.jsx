@@ -10,8 +10,8 @@ import { Card, CardMedia } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import NavigateNextRoundedIcon from "@mui/icons-material/NavigateNextRounded";
 import { useState, useContext } from "react";
-import { AuthContext } from "../../../service/AuthService";
 import Review from "./Review";
+import { useSelector } from "react-redux";
 
 const TitleTypography = styled(Typography)(({ theme }) => ({
   position: "relative",
@@ -93,7 +93,8 @@ UsuarioReview.propTypes = {
 };
 
 const ListaReviews = ({ reviews, items }) => {
-  const { user } = useContext(AuthContext);
+  // const { user } = useContext(AuthContext);
+  const { user } = useSelector((state) => state.usuario);
   const [page, setPage] = useState(1);
   const itemsPerPage = items;
 
@@ -115,7 +116,7 @@ const ListaReviews = ({ reviews, items }) => {
     setFocusedCardIndex(null);
   };
 
-  console.log(reviews);
+
   return (
     <div>
       <Typography variant="h2" gutterBottom>

@@ -1,156 +1,74 @@
-import { createContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router";
+import { handleLogin } from "../redux/usuarioSlice";
 
 const URL_AUTH = "http://localhost:8080/api/auth";
 
-// Criando o contexto
-export const AuthContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
 
-  const navigate = useNavigate(); // Hook para redirecionamento
-  // Carregar usuário do localStorage ao iniciar
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    console.log("Usuário armazenado:", storedUser);
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (error) {
-        console.error("Erro ao fazer parse do JSON:", error);
-      }
-    }
-  }, []);
-
-  const handleLogin = (userData) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // Salvar no localStorage
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-    navigate(`/`); // Passa `conteudo` corretamente
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, handleLogin, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
-
-// export async function loginPost(login, handleLogin) {
-//   const URL_LOGIN = `${URL_AUTH}/login`;
-
-//   fetch(URL_LOGIN, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json", // Tipo de conteúdo que está sendo enviado
-//     },
-//     body: JSON.stringify(login),
-//   })
-//     .then((res) => {
-//       if (!res.ok) {
-//         console.log("problema");
-//         return;
-//       }
-//       return res.json();
-//     })
-//     .then((data) => {
-//       console.log("sucess:", data);
-//       handleLogin(data);
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// }
-
-// export async function registerPost(register, handleLogin){
-//   const URL_REGISTER = `${URL_AUTH}/register`;
-
-//   fetch(URL_REGISTER, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json", // Tipo de conteúdo que está sendo enviado
-//     },
-//     body: JSON.stringify(register),
-//   })
-//     .then((res) => {
-//       if (!res.ok) {
-//         console.log("problema");
-//         return;
-//       }
-//       return res.json();
-//     })
-//     .then((data) => {
-//       console.log("sucess:", data);
-//       handleLogin(data);
-//     })
-//     .catch((error) => {
-//       console.log(error);
-//     });
-// }
-
-export async function loginPost(login, handleLogin) {
+// Função assíncrona para realizar login e atualizar o estado global
+export const loginPost = (login) => async (dispatch) => {
   const URL_LOGIN = `${URL_AUTH}/login`;
 
-  fetch(URL_LOGIN, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(login),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`Erro na requisição: ${res.status}`);
-      }
-      return res.text(); // Primeiro pega como texto para evitar erro de JSON inválido
-    })
-    .then((text) => {
-      if (!text) {
-        throw new Error("Resposta vazia do servidor.");
-      }
-      return JSON.parse(text);
-    })
-    .then((data) => {
-      console.log("sucess:", data);
-      handleLogin(data);
-    })
-    .catch((error) => {
-      console.error("Erro no login:", error);
+  try {
+    const res = await fetch(URL_LOGIN, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(login),
     });
-}
 
-export async function registerPost(register, handleLogin) {
+    if (!res.ok) {
+      throw new Error(`Erro na requisição: ${res.status}`);
+    }
+
+    const text = await res.text();
+    if (!text) {
+      throw new Error("Resposta vazia do servidor.");
+    }
+
+    const data = JSON.parse(text);
+    console.log("Login bem-sucedido:", data);
+
+    // Dispara a action handleLogin para atualizar o estado
+    dispatch(handleLogin(data));
+  } catch (error) {
+    console.error("Erro no login:", error);
+  }
+};
+
+export const registerPost = (register) => async (dispatch) => {
   const URL_REGISTER = `${URL_AUTH}/register`;
 
-  fetch(URL_REGISTER, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(register),
-  })
-    .then((res) => {
-      if (!res.ok) {
-        throw new Error(`Erro na requisição: ${res.status}`);
-      }
-      return res.text();
-    })
-    .then((text) => {
-      if (!text) {
-        throw new Error("Resposta vazia do servidor.");
-      }
-      return JSON.parse(text);
-    })
-    .then((data) => {
-      console.log("sucess:", data);
-      handleLogin(data);
-    })
-    .catch((error) => {
-      console.error("Erro no registro:", error);
+  try {
+    const res = await fetch(URL_REGISTER, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(register),
     });
-}
+
+    if (!res.ok) {
+      throw new Error(`Erro na requisição: ${res.status}`);
+    }
+
+    // Verifica se a resposta é JSON antes de tentar parsear
+    const contentType = res.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      const data = await res.json();
+      console.log("Registro bem-sucedido:", data);
+
+      // Verifica se os dados retornados são válidos
+      if (!data || !data.idUsuario) {
+        throw new Error("Resposta do servidor não contém dados esperados.");
+      }
+
+      // Atualiza o estado do Redux
+      dispatch(handleLogin(data));
+    } else {
+      throw new Error("Resposta do servidor não é JSON.");
+    }
+  } catch (error) {
+    console.error("Erro no register:", error);
+  }
+};
